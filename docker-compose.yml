@@ -1,0 +1,33 @@
+version: '3.1'
+
+# Els links no caldria posar
+
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    links:
+      - db:db
+    ports:
+      - 9091:8080
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1Password
+    volumes:
+      - ./dades.sql:/docker-entrypoint-initdb.d/dades.sql
+
+  www:
+# Partim de dockerfile per poder afegir les extensions de mysql a php
+#    image: php:7.2-apache
+     build: .
+     restart: always
+     links:
+       - db
+     volumes:
+       - ./www:/var/www/html
+     ports:
+       - 9090:80
